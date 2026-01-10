@@ -44,27 +44,33 @@
       <!-------------- task input ------------------------->
       <div class="mb-4 relative group">
         <input
+          id="taskInput"
           type="text"
           placeholder="Add a new task..."
-          class="w-full bg-white/10 border border-white/10 rounded-2xl py-3 pl-6 pr-12 outline-none placeholder-white/40 focus:border-white/30 transition-all"
+          class="w-full bg-white/10 border border-white/10 rounded-2xl py-3 pl-6 pr-12 outline-none placeholder-white/40 focus:border-white/30 transition-all text-white"
         />
+
         <button
+          id="addBtn"
           class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-pink-500 rounded-xl hover:bg-pink-400 transition-colors shadow-lg shadow-pink-500/20"
         >
           <i class="fa-solid fa-plus text-sm"></i>
         </button>
       </div>
-      <!-------------- date input ------------------------->
+
+
       <div class="mb-4 relative group">
         <input
+          id="dateInput"
           type="date"
-          placeholder=""
-          class="w-full bg-white/10 border border-white/10 rounded-2xl py-3 pl-6 pr-12 outline-none placeholder-white/40 focus:border-white/30 transition-all"
+          class="w-full bg-white/10 border border-white/10 rounded-2xl py-3 pl-6 pr-12 outline-none text-white/40 focus:border-white/30 transition-all"
         />
-  
       </div>
+      
+
+      <ul id="taskList" class="space-y-3 mt-6"></ul>
       <!-------------- filter buttons ------------------------->
-      <div class="flex gap-3 mb-8">
+      <!-- <div class="flex gap-3 mb-8">
         <button
           class="flex-1 bg-white/5 hover:bg-pink-500 py-3 rounded-2xl font-semibold shadow-lg shadow-pink-500/30 transition-all"
         >
@@ -73,11 +79,11 @@
         <button
           class="flex-1 bg-white/5 hover:bg-pink-500 py-3 rounded-2xl font-semibold shadow-lg shadow-pink-500/30 transition-all"
         >
-          Added Task
+          Completed task
         </button>
-      </div>
+      </div>  -->
       <!-------------- task list ------------------------->
-      <div class="space-y-4">
+      <!-- <div class="space-y-4">
         <div
           class="flex items-center justify-between bg-white/5 border border-white/5 p-4 rounded-2xl"
         >
@@ -105,6 +111,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>  -->
+    <script src="js/script.js"></script>
   </body>
 </html>
