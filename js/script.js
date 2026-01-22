@@ -11,17 +11,18 @@ let currentFilter = "all";
 function showTasks() {
   taskList.innerHTML = "";
 
-  const filteredTasks = tasks.filter(task => {
+  const filteredTasks = tasks.filter((task) => {
     if (currentFilter === "pending") return !task.done;
     if (currentFilter === "completed") return task.done;
     return true;
   });
 
-  filteredTasks.forEach(task => {
+  filteredTasks.forEach((task) => {
     const index = tasks.indexOf(task);
 
     const li = document.createElement("li");
-    li.className = "task-item flex justify-between items-center bg-gray-50 p-4 rounded-2xl transition-all duration-200";
+    li.className =
+      "task-item flex justify-between items-center bg-gray-50 p-4 rounded-2xl transition-all duration-200";
 
     li.innerHTML = `
       <div class="flex flex-col">
@@ -49,29 +50,28 @@ function setFilter(filter) {
 }
 
 function updateFilterUI() {
-  ["all", "pending", "completed"].forEach(f => {
+  ["all", "pending", "completed"].forEach((f) => {
     const btn = document.getElementById(`filter-${f}`);
     btn.classList.toggle("border-blue-500", f === currentFilter);
     btn.classList.toggle("opacity-50", f !== currentFilter);
   });
 }
 
-
 function updateStats() {
   const total = tasks.length;
-  const completed = tasks.filter(t => t.done).length;
+  const completed = tasks.filter((t) => t.done).length;
 
   const progressText = document.getElementById("progressText");
   const progressBar = document.getElementById("progressBar");
 
   progressText.innerText = `${completed} / ${total}`;
 
-  const maxTasks = 40; 
-  const widthPercent = total === 0 ? 0 : Math.min((total / maxTasks) * 100, 100);
+  const maxTasks = 40;
+  const widthPercent =
+    total === 0 ? 0 : Math.min((total / maxTasks) * 100, 100);
   progressBar.style.width = `${widthPercent}%`;
   progressBar.style.transition = "width 0.4s ease, background 0.4s ease";
 
-  
   if (total === 0) {
     progressBar.style.background = "linear-gradient(90deg, #60a5fa, #3b82f6)";
   } else {
@@ -82,8 +82,12 @@ function updateStats() {
 
 /* --- Add Task --- */
 addBtn.onclick = () => {
-  if (!taskInput.value || !dateInput.value) {
-    alert("Task aur date dono likho");
+  if (!taskInput.value) {
+    alert("please enter task");
+    return;
+  }
+  if (!dateInput.value) {
+    alert("please select date");
     return;
   }
 
@@ -93,10 +97,11 @@ addBtn.onclick = () => {
     editIndex = null;
     addBtn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>';
   } else {
-    tasks.push({
+    tasks.unshift({
+      
       text: taskInput.value,
       date: dateInput.value,
-      done: false
+      done: false,
     });
   }
 
@@ -131,5 +136,4 @@ function save() {
   showTasks();
 }
 
-/* --- Initial Render --- */
 showTasks();
