@@ -1,80 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <style>
-      body {
-        background: linear-gradient(to bottom, #1a0b2e, #6b21a8, #f43f5e);
-        min-height: 100vh;
-      }
-    </style>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> To-Do App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+  <style>
+    body {
+      background: #f3f4f6; 
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-  <body class="flex items-center justify-center p-4 font-sans text-white">
-    <div
-      class="backdrop-blur-xl bg-white/10 border border-white/20 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md"
-    >
-      <h1 class="text-3xl font-bold text-center mb-8">To-Do App</h1>
+    #taskList::-webkit-scrollbar {
+      width: 6px;
+    }
+    #taskList::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
 
-      <div
-        class="border border-white/10 bg-black/20 rounded-3xl p-6 mb-8 flex items-center justify-between"
-      >
-        <div class="flex-1">
-          <h2 class="text-lg font-bold mb-1">Keep it Up!</h2>
-          <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-           <div id="progressBar" class="bg-pink-500 h-full" style="width: 0%"></div>
-          </div>
+
+    .task-item {
+      transition: all 0.2s;
+    }
+
+    .task-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #9ca3af;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body class="flex items-center justify-center p-4 text-gray-800">
+  <div class="bg-white rounded-3xl shadow-lg w-full max-w-md p-8 transition-all duration-300">
+    <h1 class="text-3xl font-bold text-center mb-6 text-blue-600">📝 My To-Do List</h1>
+
+    <!-- Progress -->
+    <div class="border border-gray-200 rounded-3xl p-4 mb-6 flex items-center justify-between bg-gray-50">
+      <div class="flex-1">
+        <h2 class="text-md font-semibold mb-1 text-gray-700">Tasks Completed</h2>
+        <div class="w-full h-3 rounded-full bg-gray-200 overflow-hidden">
+          <div id="progressBar" class="h-full transition-all duration-500" style="width: 0%"></div>
         </div>
-        <div
-          id="progressText" class="ml-6 bg-pink-500 h-16 w-16 rounded-full flex items-center justify-center text-xl font-bold shadow-lg shadow-pink-500/40"
-        >
-       0 / 0
-        </div>
       </div>
-      <!-------------- task input ------------------------->
-      <div class="mb-4 relative group">
-        <input
-          id="taskInput"
-          type="text"
-          placeholder="Add a new task..."
-          class="w-full bg-white/10 border border-white/10 rounded-2xl py-3 pl-6 pr-12 outline-none placeholder-white/40 focus:border-white/30 transition-all text-white"
-        />
-
-        <button
-          id="addBtn"
-          class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-pink-500 rounded-xl hover:bg-pink-400 transition-colors shadow-lg shadow-pink-500/20"
-        >
-          <i class="fa-solid fa-plus text-sm"></i>
-        </button>
+      <div id="progressText" class="ml-4 bg-blue-500 h-12 w-12 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
+        0 / 0
       </div>
+    </div>
 
+    <!-- Task input -->
+    <div class="mb-4 relative">
+      <input
+        id="taskInput"
+        type="text"
+        placeholder="Add a new task..."
+        class="w-full border border-gray-300 rounded-2xl py-3 pl-4 pr-12 outline-none placeholder-gray-400 focus:ring-2 focus:ring-blue-400 transition-all duration-200"
+      />
+      <button id="addBtn" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center hover:bg-blue-600 transform hover:scale-110 transition-all duration-200">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </div>
 
-      <div class="mb-4 relative group">
-        <input
-          id="dateInput"
-          type="date"
-          class="w-full bg-white/10 border border-white/10 rounded-2xl py-3 pl-6 pr-12 outline-none text-white/40 focus:border-white/30 transition-all"
-        />
-      </div>
-      <div class="flex justify-center gap-4 mb-6">
-  <button onclick="setFilter('all')" id="filter-all" class="text-sm font-bold pb-1 border-b-2 border-pink-500">All</button>
-  <button onclick="setFilter('pending')" id="filter-pending" class="text-sm font-bold pb-1 border-b-2 border-transparent opacity-50 hover:opacity-100">Pending</button>
-  <button onclick="setFilter('completed')" id="filter-completed" class="text-sm font-bold pb-1 border-b-2 border-transparent opacity-50 hover:opacity-100">Completed</button>
-</div>
-      
+    <div class="mb-4">
+      <input
+        id="dateInput"
+        type="date"
+        class="w-full border border-gray-300 rounded-2xl py-3 px-4 outline-none placeholder-gray-400 focus:ring-2 focus:ring-blue-400 transition-all duration-200"
+      />
+    </div>
 
-      <ul id="taskList" class="space-y-3 mt-6"></ul>
-     
-    <script src="js/script.js"></script>
-  </body>
+    <!-- Filters -->
+    <div class="flex justify-center gap-4 mb-4">
+      <button onclick="setFilter('all')" id="filter-all" class="text-sm font-semibold pb-1 border-b-2 border-blue-500">All</button>
+      <button onclick="setFilter('pending')" id="filter-pending" class="text-sm font-semibold pb-1 border-b-2 border-transparent opacity-50 hover:opacity-100 transition-all duration-200">Pending</button>
+      <button onclick="setFilter('completed')" id="filter-completed" class="text-sm font-semibold pb-1 border-b-2 border-transparent opacity-50 hover:opacity-100 transition-all duration-200">Completed</button>
+    </div>
+
+    <!-- TASK LIST -->
+    <ul id="taskList" class="space-y-3 mt-4 max-h-60 overflow-y-auto pr-2"></ul>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
 </html>

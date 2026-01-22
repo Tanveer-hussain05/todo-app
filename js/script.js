@@ -5,39 +5,36 @@ const taskList = document.getElementById("taskList");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let editIndex = null;
-let currentFilter = 'all'; // Track active filter
+let currentFilter = "all";
 
+/* --- Show Tasks --- */
 function showTasks() {
   taskList.innerHTML = "";
 
-  // 1. Filter the tasks based on currentFilter
   const filteredTasks = tasks.filter(task => {
-    if (currentFilter === 'pending') return !task.done;
-    if (currentFilter === 'completed') return task.done;
-    return true; // 'all'
+    if (currentFilter === "pending") return !task.done;
+    if (currentFilter === "completed") return task.done;
+    return true;
   });
 
-  // 2. Render the filtered list
-  filteredTasks.forEach((task, filteredIdx) => {
-    // We find the original index in the main 'tasks' array to keep edit/delete working
-    const originalIndex = tasks.indexOf(task);
+  filteredTasks.forEach(task => {
+    const index = tasks.indexOf(task);
 
-    let li = document.createElement("li");
-    li.className = "flex justify-between items-center bg-white/5 p-4 rounded-2xl animate-fadeIn";
+    const li = document.createElement("li");
+    li.className = "task-item flex justify-between items-center bg-gray-50 p-4 rounded-2xl transition-all duration-200";
 
     li.innerHTML = `
-      <div>
-        <p class="${task.done ? 'line-through opacity-50' : ''}">
-          ${task.text}
-        </p>
-        <small class="text-white/40">${task.date || "No date"}</small>
+      <div class="flex flex-col">
+        <p class="${task.done ? "completed" : ""} text-gray-800 font-medium">${task.text}</p>
+        <small class="text-gray-400">${task.date}</small>
       </div>
       <div class="flex gap-2">
-        <button class="hover:scale-110 transition-transform" onclick="editTask(${originalIndex})">✏️</button>
-        <button class="hover:scale-110 transition-transform" onclick="completeTask(${originalIndex})">✔</button>
-        <button class="hover:scale-110 transition-transform" onclick="deleteTask(${originalIndex})">❌</button>
+        <button class="hover:text-blue-500" onclick="editTask(${index})">✏️</button>
+        <button class="hover:text-green-500" onclick="completeTask(${index})">✔</button>
+        <button class="hover:text-red-500" onclick="deleteTask(${index})">❌</button>
       </div>
     `;
+
     taskList.appendChild(li);
   });
 
@@ -45,53 +42,48 @@ function showTasks() {
   updateFilterUI();
 }
 
-// ========== Filter Logic ==========
+/* --- Filters --- */
 function setFilter(filter) {
   currentFilter = filter;
   showTasks();
 }
 
 function updateFilterUI() {
-  const filters = ['all', 'pending', 'completed'];
-  filters.forEach(f => {
+  ["all", "pending", "completed"].forEach(f => {
     const btn = document.getElementById(`filter-${f}`);
-    if (f === currentFilter) {
-      btn.classList.add('border-pink-500');
-      btn.classList.remove('border-transparent', 'opacity-50');
-    } else {
-      btn.classList.remove('border-pink-500');
-      btn.classList.add('border-transparent', 'opacity-50');
-    }
+    btn.classList.toggle("border-blue-500", f === currentFilter);
+    btn.classList.toggle("opacity-50", f !== currentFilter);
   });
 }
+
 
 function updateStats() {
   const total = tasks.length;
   const completed = tasks.filter(t => t.done).length;
 
-  const maxTasks = 10; 
-
-  const addProgress = total === 0 ? 0 : Math.min((total / maxTasks) * 100, 100);
-  
-  const doneProgress = total === 0 ? 0 : (completed / total) * 100;
-
   const progressText = document.getElementById("progressText");
-  if (progressText) {
-    progressText.innerText = `${completed} / ${total}`;
-  }
-
   const progressBar = document.getElementById("progressBar");
-  if (progressBar) {
-   
-    progressBar.style.background = `linear-gradient(to right, #f43f5e ${doneProgress}%, #f9a8d4 ${addProgress}%)`;
-    progressBar.style.width = `${addProgress}%`;
+
+  progressText.innerText = `${completed} / ${total}`;
+
+  const maxTasks = 40; 
+  const widthPercent = total === 0 ? 0 : Math.min((total / maxTasks) * 100, 100);
+  progressBar.style.width = `${widthPercent}%`;
+  progressBar.style.transition = "width 0.4s ease, background 0.4s ease";
+
+  
+  if (total === 0) {
+    progressBar.style.background = "linear-gradient(90deg, #60a5fa, #3b82f6)";
+  } else {
+    const percentDone = (completed / total) * 100;
+    progressBar.style.background = `linear-gradient(90deg, #60a5fa ${percentDone}%, #b0d0ff ${percentDone}%)`;
   }
 }
 
-// ========== Add OR Edit Task ==========
-addBtn.onclick = function () {
-  if (taskInput.value.trim() === "") {
-    alert("Please write a task");
+/* --- Add Task --- */
+addBtn.onclick = () => {
+  if (!taskInput.value || !dateInput.value) {
+    alert("Task aur date dono likho");
     return;
   }
 
@@ -108,33 +100,36 @@ addBtn.onclick = function () {
     });
   }
 
-  saveAndRefresh();
+  save();
 };
 
-function editTask(index) {
-  taskInput.value = tasks[index].text;
-  dateInput.value = tasks[index].date;
-  editIndex = index;
+/* --- Edit Task --- */
+function editTask(i) {
+  taskInput.value = tasks[i].text;
+  dateInput.value = tasks[i].date;
+  editIndex = i;
   addBtn.innerHTML = "✔";
-  taskInput.focus();
 }
 
-function completeTask(index) {
-  tasks[index].done = !tasks[index].done;
-  saveAndRefresh();
+/* --- Complete / Toggle Task --- */
+function completeTask(i) {
+  tasks[i].done = !tasks[i].done;
+  save();
 }
 
-function deleteTask(index) {
-  tasks.splice(index, 1);
-  saveAndRefresh();
+/* --- Delete Task --- */
+function deleteTask(i) {
+  tasks.splice(i, 1);
+  save();
 }
 
-function saveAndRefresh() {
+/* --- Save & Render --- */
+function save() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
   taskInput.value = "";
   dateInput.value = "";
   showTasks();
 }
 
-// Initialize
+/* --- Initial Render --- */
 showTasks();
